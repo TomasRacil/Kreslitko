@@ -1,75 +1,80 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <title>Babylon.js sample code</title>
-        <button id="togglePanel">Toggle Panel</button>
-        <div id="colorPanel">
-            <div class="colorChoice" style="background-color: red;" data-color="1, 0, 0"></div>
-            <div class="colorChoice" style="background-color: blue;" data-color="0, 0, 1"></div>
-            <!-- Add more colors as needed -->
-        </div>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-        <!-- Babylon.js -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
-        <script src="https://preview.babylonjs.com/ammo.js"></script>
-        <script src="https://preview.babylonjs.com/cannon.js"></script>
-        <script src="https://preview.babylonjs.com/Oimo.js"></script>
-        <script src="https://preview.babylonjs.com/earcut.min.js"></script>
-        <script src="https://preview.babylonjs.com/babylon.js"></script>
-        <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
-        <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
-        <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
-        <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
-        <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
-        <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
-        <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+    <title>Babylon.js sample code</title>
+    <button id="togglePanel">Toggle Panel</button>
+    <div id="colorPanel">
+        <div class="colorChoice" style="background-color: red;" data-color="1, 0, 0"></div>
+        <div class="colorChoice" style="background-color: blue;" data-color="0, 0, 1"></div>
+        <!-- Add more colors as needed -->
+    </div>
 
-        <style>
-            html, body {
-                overflow: hidden;
-                width: 100%;
-                height: 100%;
-                margin: 0;
-                padding: 0;
-            }
+    <!-- Babylon.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
 
-            #renderCanvas {
-                width: 100%;
-                height: 100%;
-                touch-action: none;
-            }
+    <style>
+        html,
+        body {
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
 
-            #colorPanel {
-                position: fixed;
-                right: 0;
-                top: 50px;
-                width: 100px;
-                background: #f0f0f0;
-                padding: 10px;
-                border-radius: 5px;
-                display: block; /* Initially hidden */
-            }
+        #renderCanvas {
+            width: 100%;
+            height: 100%;
+            touch-action: none;
+        }
 
-            .colorChoice {
-                width: 50px;
-                height: 50px;
-                margin-bottom: 10px;
-                cursor: pointer;
-                border-radius: 25px;
-            }
+        #colorPanel {
+            position: fixed;
+            right: 0;
+            top: 50px;
+            width: 100px;
+            background: #f0f0f0;
+            padding: 10px;
+            border-radius: 5px;
+            display: block;
+            /* Initially hidden */
+        }
 
-            #togglePanel {
-                position: fixed;
-                right: 10px;
-                top: 10px;
-            }
-                    </style>
-    </head>
+        .colorChoice {
+            width: 50px;
+            height: 50px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border-radius: 25px;
+        }
+
+        #togglePanel {
+            position: fixed;
+            right: 10px;
+            top: 10px;
+        }
+    </style>
+</head>
+
 <body>
     <canvas id="renderCanvas"></canvas>
     <script>
+
         var canvas = document.getElementById("renderCanvas");
 
         var startRenderLoop = function (engine, canvas) {
@@ -83,150 +88,131 @@
         var engine = null;
         var scene = null;
         var sceneToRender = null;
-        var createDefaultEngine = function() { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true,  disableWebGL2Support: false}); };
+        var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false }); };
         var createScene = function () {
-    // This creates a basic Babylon Scene object (non-mesh)
-    var scene = new BABYLON.Scene(engine);
+            // This creates a basic Babylon Scene object (non-mesh)
+            var scene = new BABYLON.Scene(engine);
 
-    // Create a basic cube for the skybox
-    var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:100.0}, scene);
+            // Create a basic cube for the skybox
+            var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", { size: 10000.0 }, scene);
 
-    // Create a standard material for the skybox
-    var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+            // Create a standard material for the skybox
+            var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
 
-    skyboxMaterial.backFaceCulling = false;
-    skyboxMaterial.disableLighting = true;
+            var selectedColor = new BABYLON.Color3(1, 0, 0); // Default color, e.g., red
 
-    skybox.infiniteDistance = true;
+            skyboxMaterial.backFaceCulling = false;
+            skyboxMaterial.disableLighting = true;
 
-    // Disable reflection on the skybox material
-    // https://opengameart.org/content/sky-box-sunny-day
-    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox", scene, ["_px.png", "_nx.png", "_py.png", "_ny.png", "_pz.png", "_nz.png"]);
-    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+            skybox.infiniteDistance = true;
 
-    // Disable lighting on the skybox to ensure it's not affected by scene lighting
-    skyboxMaterial.disableLighting = true;
+            // Disable reflection on the skybox material
+            // https://opengameart.org/content/sky-box-sunny-day
+            skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox", scene, ["_px.png", "_nx.png", "_py.png", "_ny.png", "_pz.png", "_nz.png"]);
+            skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
 
-    // Apply the material to the skybox
-    skybox.material = skyboxMaterial;
+            // Disable lighting on the skybox to ensure it's not affected by scene lighting
+            skyboxMaterial.disableLighting = true;
 
-    // Optionally, to prevent the skybox from rendering for hit tests
-    skybox.infiniteDistance = true;
+            // Apply the material to the skybox
+            skybox.material = skyboxMaterial;
 
-    // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 20, new BABYLON.Vector3(0,0,5), scene);
-    camera.attachControl(canvas, true);
-    camera.lowerRadiusLimit = 15;
-    camera.upperRadiusLimit = 30;
+            // Optionally, to prevent the skybox from rendering for hit tests
+            skybox.infiniteDistance = true;
 
-    // This targets the camera to scene origin
-    camera.setTarget(BABYLON.Vector3.Zero());
+            // This creates and positions a free camera (non-mesh)
+            var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 50, new BABYLON.Vector3(0, 0, 5), scene);
+            camera.attachControl(canvas, true);
+            camera.lowerRadiusLimit = 25;
+            camera.upperRadiusLimit = 100;
 
-    // This attaches the camera to the canvas
-    camera.attachControl(canvas, true);
+            // This targets the camera to scene origin
+            camera.setTarget(BABYLON.Vector3.Zero());
 
-    // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
-    var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
+            // This attaches the camera to the canvas
+            camera.attachControl(canvas, true);
 
-    // Default intensity is 1. Let's dim the light a small amount
-    light.intensity = 0.7;
+            // This creates a light, aiming 0,1,0 - to the sky (non-mesh)
+            var light = new BABYLON.HemisphericLight("light", new BABYLON.Vector3(0, 1, 0), scene);
 
-    // Create the balloon
-    var balloon = BABYLON.MeshBuilder.CreateSphere("balloon", {diameter: 10}, scene);
-    
-    // Create a standard material for the balloon
-    var balloonMaterial = new BABYLON.StandardMaterial("balloonMaterial", scene);
-    balloon.material = balloonMaterial;
-    
-    // Initial Color (e.g., Red)
-    var color1 = new BABYLON.Color3(1, 0, 0);
-    // Second Color (e.g., Blue)
-    var color2 = new BABYLON.Color3(0, 0, 1);
+            // Default intensity is 1. Let's dim the light a small amount
+            light.intensity = 0.7;
 
-    // Set initial color
-    balloon.material.diffuseColor = color1;
 
-    
-    // Assign an action manager to the balloon
-    balloon.actionManager = new BABYLON.ActionManager(scene);
+            // Assuming the OBJ file is located in a 'models' directory
+            var modelsPath = "models/";
+            var modelName = "obal_1ku1.obj"
 
-    var selectedColor = new BABYLON.Color3(1, 0, 0); // Default color
+            document.querySelectorAll('.colorChoice').forEach(function(elem) {
+                elem.addEventListener("click", function() {
+                    var colorData = this.getAttribute('data-color').split(',');
+                    selectedColor = new BABYLON.Color3(parseFloat(colorData[0]), parseFloat(colorData[1]), parseFloat(colorData[2]));
+                });
+            });
 
-    document.querySelectorAll('.colorChoice').forEach(function(elem) {
-        elem.addEventListener("click", function() {
-            var colorData = this.getAttribute('data-color').split(',');
-            selectedColor = new BABYLON.Color3(parseFloat(colorData[0]), parseFloat(colorData[1]), parseFloat(colorData[2]));
-        });
-    });
+            // Load the model
+            BABYLON.SceneLoader.ImportMesh("", modelsPath, modelName, scene, function (meshes) {
+                
+                function changeMeshColor(mesh) {
+                    var material = new BABYLON.StandardMaterial("material", scene);
+                    material.diffuseColor = selectedColor;
+                    mesh.material = material;
+                }
 
-    scene.onPointerDown = function (evt, pickResult) {
-        // Check if the click intersects the balloon
-        if (pickResult.hit && pickResult.pickedMesh === balloon) {
-            var pickedPoint = pickResult.pickedPoint;
-            console.log('Clicked coordinates:', pickedPoint.x, pickedPoint.y, pickedPoint.z);
+                // var combinedBoundingBox = BABYLON.Mesh.MergeMeshes(meshes, true, false, undefined, false, true);
 
-            // You can also determine the hemisphere based on the Y-coordinate
-            if (pickedPoint.y >= 0) {
-                console.log('Clicked on upper hemisphere');
-            } else {
-                console.log('Clicked on lower hemisphere');
-            }
-        }
-    };
+                // // Calculate the center of the bounding box
+                // var center = combinedBoundingBox.center;
 
-    balloon.actionManager.registerAction(
-        new BABYLON.ExecuteCodeAction(
-            BABYLON.ActionManager.OnPickTrigger,
-            function () {
-                balloon.material.diffuseColor = selectedColor;
-            }
-        )
-    );
+                // Create a standard material
+                var material = new BABYLON.StandardMaterial("modelMaterial", scene);
+                material.diffuseColor = new BABYLON.Color3(1, 0.5, 0.5); // Example: soft red
+                material.specularColor = new BABYLON.Color3(1, 1, 1); // Specular color
+                material.backFaceCulling = false;
+                // material.wireframe = true;
+                // Assign the material to the model
 
-    document.getElementById("togglePanel").addEventListener("click", function() {
-        var panel = document.getElementById("colorPanel");
-        if (panel.style.display === "none") {
-            panel.style.display = "block";
-        } else {
-            panel.style.display = "none";
-        }
-    });
+                meshes.forEach(mesh => {
+                    // Translate each mesh to center the model in the scene
+                    //mesh.position = mesh.position.subtract(center);
+                    mesh.material = material;
+                    mesh.scaling = new BABYLON.Vector3(0.001, 0.001, 0.001);
+                    mesh.actionManager = new BABYLON.ActionManager(scene);
+                    mesh.actionManager.registerAction(new BABYLON.ExecuteCodeAction(BABYLON.ActionManager.OnPickTrigger, function () {
+                        changeMeshColor(mesh); // Changes color to the selected color
+                    }));
+                });
 
-    // Define the action for a click event
-    balloon.actionManager.registerAction(
-        new BABYLON.ExecuteCodeAction(
-            BABYLON.ActionManager.OnPickTrigger,
-            function () {
-                balloon.material.diffuseColor = selectedColor; 
-            }
-        )
-    );
+                
 
-    // Move the sphere upward 1/2 its height
-    balloon.position.y = 1;
-
-    // Our built-in 'ground' shape.
-    //var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene);
-
-    return scene;
-};
-                window.initFunction = async function() {
+                meshes.forEach(mesh => {
                     
-                    
-                    var asyncEngineCreation = async function() {
-                        try {
-                        return createDefaultEngine();
-                        } catch(e) {
-                        console.log("the available createEngine function failed. Creating the default engine instead");
-                        return createDefaultEngine();
-                        }
-                    }
+                });
+            });
 
-                    window.engine = await asyncEngineCreation();
-        if (!engine) throw 'engine should not be null.';
-        startRenderLoop(engine, canvas);
-        window.scene = createScene();};
-        initFunction().then(() => {sceneToRender = scene                    
+            
+
+            return scene;
+        };
+        window.initFunction = async function () {
+
+
+            var asyncEngineCreation = async function () {
+                try {
+                    return createDefaultEngine();
+                } catch (e) {
+                    console.log("the available createEngine function failed. Creating the default engine instead");
+                    return createDefaultEngine();
+                }
+            }
+
+            window.engine = await asyncEngineCreation();
+            if (!engine) throw 'engine should not be null.';
+            startRenderLoop(engine, canvas);
+            window.scene = createScene();
+        };
+        initFunction().then(() => {
+            sceneToRender = scene
         });
 
         // Resize
@@ -235,4 +221,5 @@
         });
     </script>
 </body>
+
 </html>
