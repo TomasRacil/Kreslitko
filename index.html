@@ -4,6 +4,12 @@
         <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
         <title>Babylon.js sample code</title>
+        <button id="togglePanel">Toggle Panel</button>
+        <div id="colorPanel">
+            <div class="colorChoice" style="background-color: red;" data-color="1, 0, 0"></div>
+            <div class="colorChoice" style="background-color: blue;" data-color="0, 0, 1"></div>
+            <!-- Add more colors as needed -->
+        </div>
 
         <!-- Babylon.js -->
         <script src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.6.2/dat.gui.min.js"></script>
@@ -34,7 +40,32 @@
                 height: 100%;
                 touch-action: none;
             }
-        </style>
+
+            #colorPanel {
+                position: fixed;
+                right: 0;
+                top: 50px;
+                width: 100px;
+                background: #f0f0f0;
+                padding: 10px;
+                border-radius: 5px;
+                display: block; /* Initially hidden */
+            }
+
+            .colorChoice {
+                width: 50px;
+                height: 50px;
+                margin-bottom: 10px;
+                cursor: pointer;
+                border-radius: 25px;
+            }
+
+            #togglePanel {
+                position: fixed;
+                right: 10px;
+                top: 10px;
+            }
+                    </style>
     </head>
 <body>
     <canvas id="renderCanvas"></canvas>
@@ -57,8 +88,36 @@
     // This creates a basic Babylon Scene object (non-mesh)
     var scene = new BABYLON.Scene(engine);
 
+    // Create a basic cube for the skybox
+    var skybox = BABYLON.MeshBuilder.CreateBox("skyBox", {size:100.0}, scene);
+
+    // Create a standard material for the skybox
+    var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
+
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.disableLighting = true;
+
+    skybox.infiniteDistance = true;
+
+    // Disable reflection on the skybox material
+    // https://opengameart.org/content/sky-box-sunny-day
+    skyboxMaterial.reflectionTexture = new BABYLON.CubeTexture("textures/skybox", scene, ["_px.png", "_nx.png", "_py.png", "_ny.png", "_pz.png", "_nz.png"]);
+    skyboxMaterial.reflectionTexture.coordinatesMode = BABYLON.Texture.SKYBOX_MODE;
+
+    // Disable lighting on the skybox to ensure it's not affected by scene lighting
+    skyboxMaterial.disableLighting = true;
+
+    // Apply the material to the skybox
+    skybox.material = skyboxMaterial;
+
+    // Optionally, to prevent the skybox from rendering for hit tests
+    skybox.infiniteDistance = true;
+
     // This creates and positions a free camera (non-mesh)
-    var camera = new BABYLON.FreeCamera("camera1", new BABYLON.Vector3(0, 5, -10), scene);
+    var camera = new BABYLON.ArcRotateCamera("Camera", Math.PI / 2, Math.PI / 2, 20, new BABYLON.Vector3(0,0,5), scene);
+    camera.attachControl(canvas, true);
+    camera.lowerRadiusLimit = 15;
+    camera.upperRadiusLimit = 30;
 
     // This targets the camera to scene origin
     camera.setTarget(BABYLON.Vector3.Zero());
@@ -72,14 +131,82 @@
     // Default intensity is 1. Let's dim the light a small amount
     light.intensity = 0.7;
 
-    // Our built-in 'sphere' shape.
-    var sphere = BABYLON.MeshBuilder.CreateSphere("sphere", {diameter: 2, segments: 32}, scene);
+    // Create the balloon
+    var balloon = BABYLON.MeshBuilder.CreateSphere("balloon", {diameter: 10}, scene);
+    
+    // Create a standard material for the balloon
+    var balloonMaterial = new BABYLON.StandardMaterial("balloonMaterial", scene);
+    balloon.material = balloonMaterial;
+    
+    // Initial Color (e.g., Red)
+    var color1 = new BABYLON.Color3(1, 0, 0);
+    // Second Color (e.g., Blue)
+    var color2 = new BABYLON.Color3(0, 0, 1);
+
+    // Set initial color
+    balloon.material.diffuseColor = color1;
+
+    
+    // Assign an action manager to the balloon
+    balloon.actionManager = new BABYLON.ActionManager(scene);
+
+    var selectedColor = new BABYLON.Color3(1, 0, 0); // Default color
+
+    document.querySelectorAll('.colorChoice').forEach(function(elem) {
+        elem.addEventListener("click", function() {
+            var colorData = this.getAttribute('data-color').split(',');
+            selectedColor = new BABYLON.Color3(parseFloat(colorData[0]), parseFloat(colorData[1]), parseFloat(colorData[2]));
+        });
+    });
+
+    scene.onPointerDown = function (evt, pickResult) {
+        // Check if the click intersects the balloon
+        if (pickResult.hit && pickResult.pickedMesh === balloon) {
+            var pickedPoint = pickResult.pickedPoint;
+            console.log('Clicked coordinates:', pickedPoint.x, pickedPoint.y, pickedPoint.z);
+
+            // You can also determine the hemisphere based on the Y-coordinate
+            if (pickedPoint.y >= 0) {
+                console.log('Clicked on upper hemisphere');
+            } else {
+                console.log('Clicked on lower hemisphere');
+            }
+        }
+    };
+
+    balloon.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPickTrigger,
+            function () {
+                balloon.material.diffuseColor = selectedColor;
+            }
+        )
+    );
+
+    document.getElementById("togglePanel").addEventListener("click", function() {
+        var panel = document.getElementById("colorPanel");
+        if (panel.style.display === "none") {
+            panel.style.display = "block";
+        } else {
+            panel.style.display = "none";
+        }
+    });
+
+    // Define the action for a click event
+    balloon.actionManager.registerAction(
+        new BABYLON.ExecuteCodeAction(
+            BABYLON.ActionManager.OnPickTrigger,
+            function () {
+                balloon.material.diffuseColor = selectedColor; 
+            }
+        )
+    );
 
     // Move the sphere upward 1/2 its height
-    sphere.position.y = 1;
+    balloon.position.y = 1;
 
     // Our built-in 'ground' shape.
-    var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene);
+    //var ground = BABYLON.MeshBuilder.CreateGround("ground", {width: 6, height: 6}, scene);
 
     return scene;
 };
