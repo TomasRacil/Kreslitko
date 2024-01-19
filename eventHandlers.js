@@ -1,6 +1,8 @@
 // eventHandlers.js
 function setupEventHandlers() {
-    
+    document.getElementById('coloringModeSelector').addEventListener('change', function (event) {
+        currentColoringMode = event.target.value;
+    });
     document.getElementById("togglePanel").addEventListener("click", function () {
         var panel = document.getElementById("colorPanel");
         if (panel.style.display === "none") {
@@ -9,11 +11,8 @@ function setupEventHandlers() {
             panel.style.display = "none";
         }
     });
-    document.getElementById('modelPicker').addEventListener('change', function(event) {
+    document.getElementById('modelPicker').addEventListener('change', function (event) {
         var selectedIndex = event.target.selectedIndex;
-        console.log(selectedIndex);
-        console.log(models);
-        console.log(models[selectedIndex]);
         var selectedModel = models[selectedIndex].filename;
         var selectedModelScaling = models[selectedIndex].scaling;
         loadModel(selectedModel, selectedModelScaling);
@@ -23,7 +22,7 @@ function setupEventHandlers() {
 function setupColorPicker(scene) {
     var colorPicker = document.getElementById('colorPicker');
 
-    colorPicker.addEventListener('input', function() {
+    colorPicker.addEventListener('input', function () {
         var colorVal = colorPicker.value;
         // Convert hex color to Babylon Color3
         var color3 = hexToColor3(colorVal);

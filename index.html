@@ -4,29 +4,20 @@
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
-    <title>Babylon.js sample code</title>
+    <title>Kreslitko</title>
     <button id="togglePanel">Toggle Panel</button>
     <div id="colorPanel">
         <select id="modelPicker"></select>
-        <input type="color" id="colorPicker" value="#ff0000">
+        <input type="color" id="colorPicker" value="#ffffff">
+
+        <select id="coloringModeSelector">
+            <option value="all">All</option>
+            <option value="meridians">Gore</option>
+            <option value="parallels">Line</option>
+            <option value="cells">Panel</option>
+        </select>
     </div>
-    <script src="https://preview.babylonjs.com/cannon.js"></script>
-    <!-- Babylon.js -->
-    <script src="sceneSetup.js"></script>
-    <script src="modelLoader.js"></script>
-    <script src="eventHandlers.js"></script>
-    <script src="https://preview.babylonjs.com/ammo.js"></script>
-    <script src="https://preview.babylonjs.com/cannon.js"></script>
-    <script src="https://preview.babylonjs.com/Oimo.js"></script>
-    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
-    <script src="https://preview.babylonjs.com/babylon.js"></script>
-    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
-    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
-    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
-    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
-    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
-    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
-    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
+
 
     <style>
         html,
@@ -70,25 +61,44 @@
             top: 10px;
         }
     </style>
+
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <!-- Babylon.js -->
+    <script src="sceneSetup.js"></script>
+    <script src="modelLoader.js"></script>
+    <script src="eventHandlers.js"></script>
+    <script src="https://preview.babylonjs.com/ammo.js"></script>
+    <script src="https://preview.babylonjs.com/cannon.js"></script>
+    <script src="https://preview.babylonjs.com/Oimo.js"></script>
+    <script src="https://preview.babylonjs.com/earcut.min.js"></script>
+    <script src="https://preview.babylonjs.com/babylon.js"></script>
+    <script src="https://preview.babylonjs.com/materialsLibrary/babylonjs.materials.min.js"></script>
+    <script src="https://preview.babylonjs.com/proceduralTexturesLibrary/babylonjs.proceduralTextures.min.js"></script>
+    <script src="https://preview.babylonjs.com/postProcessesLibrary/babylonjs.postProcess.min.js"></script>
+    <script src="https://preview.babylonjs.com/loaders/babylonjs.loaders.js"></script>
+    <script src="https://preview.babylonjs.com/serializers/babylonjs.serializers.min.js"></script>
+    <script src="https://preview.babylonjs.com/gui/babylon.gui.min.js"></script>
+    <script src="https://preview.babylonjs.com/inspector/babylon.inspector.bundle.js"></script>
 </head>
 
 <body>
     <canvas id="renderCanvas"></canvas>
     <script>
-
         var canvas = document.getElementById("renderCanvas");
         var currentModels = [];
 
-         // Assuming the OBJ file is located in a 'models' directory
+        // Assuming the OBJ file is located in a 'models' directory
         var modelsPath = "models/";
         // var modelName = "obal_1ku1.obj"
-        var selectedColor = new BABYLON.Color3(1, 0, 0); // Default color, e.g., red
+        var selectedColor = new BABYLON.Color3(1, 1, 1); // Default color, e.g., red
 
         var engine = null;
         var scene = null;
         var sceneToRender = null;
         var assetsManager = null;
         var models = [];
+
+        let currentColoringMode = 'meridians';
 
         var startRenderLoop = function (engine, canvas) {
             engine.runRenderLoop(function () {
@@ -113,7 +123,7 @@
             .catch(error => console.error('Error loading model list:', error));
 
         var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false }); };
-        
+
 
         window.initFunction = async function () {
 
@@ -134,6 +144,7 @@
             assetsManager = new BABYLON.AssetsManager(window.scene);
             setupColorPicker(window.scene);
             setupEventHandlers();
+            loadModel('obal_1ku1.obj', 0.001);
             // loadModel(window.scene, currentModels, assetsManager, modelsPath, modelName)
         };
         initFunction().then(() => {

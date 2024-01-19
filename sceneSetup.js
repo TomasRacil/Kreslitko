@@ -9,7 +9,7 @@ var createScene = function () {
     // Create a standard material for the skybox
     var skyboxMaterial = new BABYLON.StandardMaterial("skyBox", scene);
 
-    
+
 
     skyboxMaterial.backFaceCulling = false;
     skyboxMaterial.disableLighting = true;
@@ -47,17 +47,6 @@ var createScene = function () {
 
     // Default intensity is 1. Let's dim the light a small amount
     light.intensity = 0.7;
-
-
-    // document.getElementById("togglePanel").addEventListener("click", function () {
-    //     var panel = document.getElementById("colorPanel");
-    //     if (panel.style.display === "none") {
-    //         panel.style.display = "block";
-    //     } else {
-    //         panel.style.display = "none";
-    //     }
-    // });
-
 
     return scene;
 };

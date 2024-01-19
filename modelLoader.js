@@ -1,10 +1,56 @@
+function colorMeridians(targetMeshName, material) {
+    var re = new RegExp("^\\d{2}-"+targetMeshName.split('-')[1]+"$");
+    currentModels.forEach(mesh => {
+        // Check if the mesh name indicates a meridian
+        if (re.test(mesh.name)) {
+            mesh.material = material;
+        }
+    });
+}
 
+function colorParallels(targetMeshName, material) {
+    var re = new RegExp("^"+targetMeshName.split('-')[0]+"-\\d{1,2}$");
+    currentModels.forEach(mesh => {
+        // Check if the mesh name indicates a parallel
+        if (re.test(mesh.name)) {
+            mesh.material = material;
+        }
+    });
+}
+
+function changeMeshColor(mesh) {
+        
+    console.log(mesh);
+    var material = new BABYLON.StandardMaterial("material", scene);
+    material.diffuseColor = selectedColor;
+    material.backFaceCulling = false;
+    switch(currentColoringMode) {
+        case 'all':
+            currentModels.forEach(mesh => {
+                    mesh.material = material;
+            });
+            break;
+        case 'meridians':
+            // Color the meridian
+            colorMeridians(mesh.name, material);
+            break;
+        case 'parallels':
+            // Color the parallel
+            colorParallels(mesh.name, material)
+            break;
+        case 'cells':
+            // Color the individual cell
+            mesh.material = material;
+            break;
+    } 
+    
+}
 
 var loadModel = function (modelName, modelScaling) {
 
     // Create a standard material
     var material = new BABYLON.StandardMaterial("modelMaterial", scene);
-    material.diffuseColor = new BABYLON.Color3(1, 0.5, 0.5); // Example: soft red
+    material.diffuseColor = selectedColor 
     material.specularColor = new BABYLON.Color3(1, 1, 1); // Specular color
     material.backFaceCulling = false;
 
@@ -16,16 +62,10 @@ var loadModel = function (modelName, modelScaling) {
         currentModels = [];
     }
 
-    function changeMeshColor(mesh) {
-        var material = new BABYLON.StandardMaterial("material", scene);
-        material.diffuseColor = selectedColor;
-        material.backFaceCulling = false;
-        mesh.material = material;
-    }
+    
 
     // Add a mesh task to load the OBJ file
     var meshTask = assetsManager.addMeshTask("obj_task", "", modelsPath, modelName);
-    console.log(modelScaling);
     meshTask.onSuccess = function (task) {
         task.loadedMeshes.forEach(function (mesh) {
             // Scale down the model
