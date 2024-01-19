@@ -7,14 +7,14 @@
     <title>Babylon.js sample code</title>
     <button id="togglePanel">Toggle Panel</button>
     <div id="colorPanel">
-        <div class="colorChoice" style="background-color: red;" data-color="1, 0, 0"></div>
-        <div class="colorChoice" style="background-color: blue;" data-color="0, 0, 1"></div>
-        <!-- Add more colors as needed -->
+        <select id="modelPicker"></select>
+        <input type="color" id="colorPicker" value="#ff0000">
     </div>
     <script src="https://preview.babylonjs.com/cannon.js"></script>
     <!-- Babylon.js -->
     <script src="sceneSetup.js"></script>
     <script src="modelLoader.js"></script>
+    <script src="eventHandlers.js"></script>
     <script src="https://preview.babylonjs.com/ammo.js"></script>
     <script src="https://preview.babylonjs.com/cannon.js"></script>
     <script src="https://preview.babylonjs.com/Oimo.js"></script>
@@ -77,6 +77,18 @@
     <script>
 
         var canvas = document.getElementById("renderCanvas");
+        var currentModels = [];
+
+         // Assuming the OBJ file is located in a 'models' directory
+        var modelsPath = "models/";
+        // var modelName = "obal_1ku1.obj"
+        var selectedColor = new BABYLON.Color3(1, 0, 0); // Default color, e.g., red
+
+        var engine = null;
+        var scene = null;
+        var sceneToRender = null;
+        var assetsManager = null;
+        var models = [];
 
         var startRenderLoop = function (engine, canvas) {
             engine.runRenderLoop(function () {
@@ -86,14 +98,19 @@
             });
         }
 
-        // Assuming the OBJ file is located in a 'models' directory
-        var modelsPath = "models/";
-        var modelName = "obal_1ku1.obj"
-        var selectedColor = new BABYLON.Color3(1, 0, 0); // Default color, e.g., red
-
-        var engine = null;
-        var scene = null;
-        var sceneToRender = null;
+        fetch('models.json')
+            .then(response => response.json())
+            .then(loadedModels => {
+                models = loadedModels;
+                const modelPicker = document.getElementById('modelPicker');
+                models.forEach(model => {
+                    let option = document.createElement('option');
+                    option.value = model.filename;
+                    option.textContent = model.name;
+                    modelPicker.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error loading model list:', error));
 
         var createDefaultEngine = function () { return new BABYLON.Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true, disableWebGL2Support: false }); };
         
@@ -114,8 +131,10 @@
             if (!engine) throw 'engine should not be null.';
             startRenderLoop(engine, canvas);
             window.scene = createScene();
-            var assetsManager = new BABYLON.AssetsManager(window.scene);
-            loadModel(assetsManager, modelsPath, modelName)
+            assetsManager = new BABYLON.AssetsManager(window.scene);
+            setupColorPicker(window.scene);
+            setupEventHandlers();
+            // loadModel(window.scene, currentModels, assetsManager, modelsPath, modelName)
         };
         initFunction().then(() => {
             sceneToRender = scene

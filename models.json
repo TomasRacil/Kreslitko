@@ -1,0 +1,12 @@
+[
+    {
+        "name": "Balón",
+        "filename": "obal_1ku1.obj",
+        "scaling": 0.001
+    },
+    {
+        "name": "Kostka",
+        "filename": "cube.obj",
+        "scaling": 1
+    }
+]
