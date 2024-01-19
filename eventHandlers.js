@@ -1,15 +1,12 @@
 // eventHandlers.js
-function setupEventHandlers() {
-    document.getElementById('coloringModeSelector').addEventListener('change', function (event) {
-        currentColoringMode = event.target.value;
-    });
-    document.getElementById("togglePanel").addEventListener("click", function () {
-        var panel = document.getElementById("colorPanel");
-        if (panel.style.display === "none") {
-            panel.style.display = "block";
-        } else {
-            panel.style.display = "none";
-        }
+function setupEventHandlers() {    
+    var colorModeButtons = document.querySelectorAll('.colorModeButton');
+    colorModeButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+            colorModeButtons.forEach(btn => btn.classList.remove('active')); // Remove 'active' from all buttons
+            button.classList.add('active'); // Add 'active' to clicked button
+            currentColoringMode = button.getAttribute('data-mode');
+        });
     });
     document.getElementById('modelPicker').addEventListener('change', function (event) {
         var selectedIndex = event.target.selectedIndex;

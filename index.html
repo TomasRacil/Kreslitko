@@ -5,17 +5,19 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 
     <title>Kreslitko</title>
-    <button id="togglePanel">Toggle Panel</button>
-    <div id="colorPanel">
-        <select id="modelPicker"></select>
-        <input type="color" id="colorPicker" value="#ffffff">
-
-        <select id="coloringModeSelector">
-            <option value="all">All</option>
-            <option value="meridians">Gore</option>
-            <option value="parallels">Line</option>
-            <option value="cells">Panel</option>
-        </select>
+    <div id="toolPanel">
+        <div class="toolItem">
+            <select id="modelPicker"></select>
+        </div>
+        <div class="toolItem">
+            <input type="color" id="colorPicker" value="#ffffff">
+        </div>
+        <div class="toolItem" id="colorModeButtons">
+            <button class="colorModeButton" data-mode="meridians">Gore</button>
+            <button class="colorModeButton" data-mode="parallels">Line</button>
+            <button class="colorModeButton" data-mode="cells">Panel</button>
+            <button class="colorModeButton" data-mode="all">All</button>
+        </div>
     </div>
 
 
@@ -28,6 +30,50 @@
             margin: 0;
             padding: 0;
         }
+        .toolItem {
+            display: flex;
+            align-items: center;
+            margin: 0 10px;
+        }
+        
+        #toolPanel {
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.3); /* semi-transparent */
+            padding: 10px;
+            box-sizing: border-box;
+            display: flex;
+            align-items: center;
+            z-index: 1000; /* Ensure it's above the canvas */
+        }
+
+        #toolPanel select {
+            padding: 5px 10px;
+            border: 1px solid #ccc;
+            border-radius: 15px; /* Rounded edges */
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            outline: none;
+        }
+
+        #toolPanel select:hover {
+            border-color: #007bff; /* Change border color on hover */
+        }
+
+        #toolPanel select:focus {
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Focus state */
+        }
+        #toolPanel input[type=color] {
+            /* Existing styles... */
+            border-radius: 15%; /* Make color picker round */
+        }
+
+        .colorModeButton:hover {
+            background-color: #0056b3; /* Slightly darker on hover */
+        }
 
         #renderCanvas {
             width: 100%;
@@ -35,31 +81,20 @@
             touch-action: none;
         }
 
-        #colorPanel {
-            position: fixed;
-            right: 0;
-            top: 50px;
-            width: 100px;
+        .colorModeButton {
             background: #f0f0f0;
-            padding: 10px;
-            border-radius: 5px;
-            display: block;
-            /* Initially hidden */
-        }
-
-        .colorChoice {
-            width: 50px;
-            height: 50px;
-            margin-bottom: 10px;
+            border: 1px solid #ddd;
+            padding: 5px 15px;
+            border-radius: 15px; /* Rounded edges for buttons */
+            margin: 0 5px;
             cursor: pointer;
-            border-radius: 25px;
         }
 
-        #togglePanel {
-            position: fixed;
-            right: 10px;
-            top: 10px;
+        .colorModeButton.active {
+            background: #007bff;
+            color: white;
         }
+
     </style>
 
     <script src="https://preview.babylonjs.com/cannon.js"></script>

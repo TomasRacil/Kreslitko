@@ -19,8 +19,6 @@ function colorParallels(targetMeshName, material) {
 }
 
 function changeMeshColor(mesh) {
-        
-    console.log(mesh);
     var material = new BABYLON.StandardMaterial("material", scene);
     material.diffuseColor = selectedColor;
     material.backFaceCulling = false;
