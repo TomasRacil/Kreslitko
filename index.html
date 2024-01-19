@@ -9,6 +9,7 @@
         <div class="toolItem">
             <select id="modelPicker"></select>
         </div>
+        <div class="divider"></div> <!-- Divider -->
         <div class="toolItem">
             <input type="color" id="colorPicker" value="#ffffff">
         </div>
@@ -29,6 +30,12 @@
             height: 100%;
             margin: 0;
             padding: 0;
+        }
+        .divider {
+            width: 1px;
+            height: 30px; /* Adjust to match the height of the tool items */
+            background-color: #000000;
+            margin: 0 20px;
         }
         .toolItem {
             display: flex;
